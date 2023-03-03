@@ -15,7 +15,7 @@ class TrainTimes:
             trips = self.feed.filter_trips(headed_for_stop_id=self.stop_id)
             stop_time_updates = [trip.stop_time_updates for trip in trips]
             times = [[update.arrival for update in update_list if update.stop_id == self.stop_id] for update_list in stop_time_updates]
-            self.times = [time_list[0] for time_list in times]
+            self.times = sorted([time_list[0] for time_list in times])
         except:
             print("failed to get train times")
         
