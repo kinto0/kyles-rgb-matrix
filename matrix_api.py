@@ -20,7 +20,7 @@ class Matrix:
         options.brightness = 100
         options.hardware_mapping = "adafruit-hat"
         # options.limit_refresh_rate_hz = 60
-        options.pwm_bits = 1
+        options.pwm_bits = 3
 
         self.matrix = RGBMatrix(options = options)
         self.canvas = self.matrix.CreateFrameCanvas()

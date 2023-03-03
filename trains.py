@@ -2,21 +2,21 @@
 import time
 import asyncio
 from datetime import datetime, timedelta
-from train_api import train_estimates
+from train_api import TrainTimes
 from matrix_api import Matrix, Color
 
 matrix = Matrix()
 q_color = Color(255, 205, 0)
 six_color = Color(0, 147, 61)
-text_color = Color(0, 211, 0)
+text_color = Color(255, 255, 255)
 no_color = Color(0, 0, 0)
 seconds: int = 0
-q_times = None
-six_times = None
+q_times = TrainTimes("Q", "Q03S")
+six_times = TrainTimes("6", "628S")
 
 async def update_times():
     global q_times, six_times, seconds
-    [q_times, six_times] = await asyncio.gather(train_estimates("Q", "Q03S"), train_estimates("6", "628S"))
+    await asyncio.gather(q_times.refresh(), six_times.refresh())
     seconds = 0
 
 def format_times(times) -> str:
@@ -39,12 +39,13 @@ async def draw():
     # Draw Q
     matrix.drawFilledCircle(4, q_y + 2, 4, q_color)
     matrix.drawText(3, q_y + 5, no_color, "Q")
+    matrix.drawFilledCircle(4, q_y + 5, 1, q_color)
     # Draw stop + down arrow
     matrix.drawText(9, q_y + 5, q_color, "72")
     matrix.drawLine(18, q_y, 18, q_y + 4, q_color)
     matrix.drawLine(17, q_y + 3, 19, q_y + 3, q_color)
     # Draw times
-    matrix.drawText(21, q_y + 5, text_color, format_times(q_times))
+    matrix.drawText(21, q_y + 5, text_color, format_times(q_times.get_times()))
 
     
     six_y = 15
@@ -56,7 +57,7 @@ async def draw():
     matrix.drawLine(18, six_y, 18, six_y + 4, six_color)
     matrix.drawLine(17, six_y + 3, 19, six_y + 3, six_color)
     # Draw times
-    matrix.drawText(21, six_y + 5, text_color, format_times(six_times))
+    matrix.drawText(21, six_y + 5, text_color, format_times(six_times.get_times()))
 
     matrix.tick()
 
