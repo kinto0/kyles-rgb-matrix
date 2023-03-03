@@ -8,16 +8,16 @@ from matrix_api import Matrix, Color
 matrix = Matrix()
 q_color = Color(255, 205, 0)
 six_color = Color(0, 147, 61)
-text_color = Color(255, 255, 255)
+text_color = Color(200, 200, 200)
 no_color = Color(0, 0, 0)
-seconds: int = 0
+half_seconds: int = 0
 q_times = TrainTimes("Q", "Q03S")
 six_times = TrainTimes("6", "628S")
 
 async def update_times():
-    global q_times, six_times, seconds
+    global q_times, six_times, half_seconds
     await asyncio.gather(q_times.refresh(), six_times.refresh())
-    seconds = 0
+    half_seconds = 0
 
 def format_times(times) -> str:
     now = datetime.now()
@@ -29,11 +29,11 @@ def format_times(times) -> str:
 
 
 async def draw():
-    global seconds, scheduler, q_times, six_times
-    seconds += 1
+    global half_seconds, scheduler, q_times, six_times
+    half_seconds += 1
 
     # Draw recency line
-    matrix.drawLine(0, 0, seconds * 2, 0, q_color)
+    matrix.drawLine(0, 0, half_seconds, 0, q_color)
 
     q_y = 5
     # Draw Q
@@ -64,7 +64,7 @@ async def draw():
 async def run_draw_loop():
     while True:
         await asyncio.gather(
-                asyncio.sleep(1),
+                asyncio.sleep(.5),
                 draw()
         )
 
