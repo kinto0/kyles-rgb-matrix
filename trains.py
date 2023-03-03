@@ -18,6 +18,8 @@ def update_times():
     global q_times, six_times
     q_times = train_estimates("Q", "Q03S")
     six_times = train_estimates("6", "628S")
+    seconds = 0
+    scheduler.enter(30, 1, update_times, ())
 
 def format_times(times) -> str:
     now = datetime.now()
@@ -30,11 +32,8 @@ def format_times(times) -> str:
 
 def draw():
     global seconds, scheduler, q_times, six_times
-    scheduler.enter(1, 1, draw, ())
+    scheduler.enter(1, 2, draw, ())
     seconds += 1
-    if seconds == 30:
-        seconds = 0
-        scheduler.enter(30, 2, update_times, ())
 
     # Draw recency line
     matrix.drawLine(0, 0, seconds * 2, 0, q_color)

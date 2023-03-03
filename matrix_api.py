@@ -13,7 +13,7 @@ class Color:
 class Matrix:
     def __init__(self):
         options = RGBMatrixOptions()
-        options.show_refresh_rate = 1
+        options.show_refresh_rate = 0
         options.rows = 32
         options.cols = 64
         options.drop_privileges = False
