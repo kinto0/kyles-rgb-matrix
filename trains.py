@@ -76,6 +76,7 @@ async def run_request_loop():
         
 async def main():
     matrix.drawText(0, 10, text_color, "loading")
+    matrix.tick()
     await update_times()
 
     await asyncio.gather(
