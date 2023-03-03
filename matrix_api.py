@@ -17,20 +17,24 @@ class Matrix:
         options.rows = 32
         options.cols = 64
         options.drop_privileges = False
+        options.brightness = 100
+        options.hardware_mapping = "adafruit-hat"
+        options.limit_refresh_rate_hz = 60
 
         self.matrix = RGBMatrix(options = options)
+        self.canvas = self.matrix.CreateFrameCanvas()
 
     def drawText(self, x: int, y: int, color: Color, text: str):
-        graphics.DrawText(self.matrix, font, x, y, graphics.Color(color.r, color.g, color.b), text)
+        graphics.DrawText(self.canvas, font, x, y, graphics.Color(color.r, color.g, color.b), text)
 
     def drawCircle(self, x: int, y: int, radius: int, color: Color):
-        graphics.DrawCircle(self.matrix, x, y, radius, graphics.Color(color.r, color.g, color.b))
+        graphics.DrawCircle(self.canvas, x, y, radius, graphics.Color(color.r, color.g, color.b))
 
     def drawFilledCircle(self, x: int, y: int, radius: int, color: Color):
         for x_diff in range(-radius, radius):
             y_diff = radius - abs(x_diff)
             graphics.DrawLine(
-                    self.matrix,
+                    self.canvas,
                     x + x_diff,
                     y - y_diff,
                     x + x_diff,
@@ -39,8 +43,9 @@ class Matrix:
                 )
 
     def drawLine(self, x: int, y: int, x2: int, y2: int, color: Color):
-        graphics.DrawLine(self.matrix, x, y, x2, y2, graphics.Color(color.r, color.g, color.b))
+        graphics.DrawLine(self.canvas, x, y, x2, y2, graphics.Color(color.r, color.g, color.b))
 
-    def clear(self):
-        self.matrix.Clear()
+    def tick(self):
+        self.canvas = self.matrix.SwapOnVSync(self.canvas)
+        self.canvas.Clear()
 

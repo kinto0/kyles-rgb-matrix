@@ -35,7 +35,6 @@ def draw():
     if seconds == 30:
         seconds = 0
         scheduler.enter(30, 2, update_times, ())
-    matrix.clear()
 
     # Draw recency line
     matrix.drawLine(0, 0, seconds * 2, 0, q_color)
@@ -63,8 +62,11 @@ def draw():
     # Draw times
     matrix.drawText(21, six_y + 5, text_color, format_times(six_times))
 
+    matrix.tick()
+
 def main():
     matrix.drawText(0, 10, text_color, "loading")
+    matrix.tick()
     update_times()
     scheduler.enter(1, 2, draw, ())
     scheduler.run()
