@@ -4,6 +4,7 @@ import asyncio
 from datetime import datetime, timedelta
 from train_api import TrainTimes
 from matrix_api import Matrix, Color
+import signal, sys
 
 matrix = Matrix()
 q_color = Color(255, 205, 0)
@@ -13,6 +14,8 @@ no_color = Color(0, 0, 0)
 half_seconds: int = 0
 q_times = TrainTimes("Q", "Q03S")
 six_times = TrainTimes("6", "628S")
+
+tasks = {}
 
 async def update_times():
     global q_times, six_times, half_seconds
@@ -62,23 +65,40 @@ async def draw():
     matrix.tick()
 
 async def run_draw_loop():
+    global tasks
     while True:
-        await asyncio.gather(
+        tasks['draw'] = asyncio.gather(
                 asyncio.sleep(.5),
                 draw()
         )
+        await tasks['draw']
+
+async def run_request():
+    global tasks
+    tasks['requests'] = asyncio.gather(
+            asyncio.sleep(30),
+            update_times()
+    )
+    await tasks['requests']
 
 async def run_request_loop():
     while True:
-        await asyncio.gather(
-                asyncio.sleep(30),
-                update_times()
-        )
-        
+        await run_request()
+
+def exit_gracefully(sig, frame):
+    global matrix, tasks
+    print("exiting")
+    [task.cancel() for _, task in tasks.items()]
+    matrix.tick()
+    sys.exit(0)
+    
 async def main():
+    global matrix, text_color
+
+    signal.signal(signal.SIGINT, exit_gracefully)
     matrix.drawText(0, 10, text_color, "loading")
     matrix.tick()
-    await update_times()
+    await run_request()
 
     await asyncio.gather(
         run_draw_loop(),
