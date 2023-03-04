@@ -1,5 +1,6 @@
 from rgbmatrix import graphics, RGBMatrix, RGBMatrixOptions
 from dataclasses import dataclass
+from PIL import Image
 
 font = graphics.Font()
 font.LoadFont("./tom-thumb.bdf")
@@ -11,6 +12,7 @@ class Color:
     b: int
 
 class Matrix:
+    """API for interacting with a matrix. After drawing what is desired, tick must be called to actually update the display."""
     def __init__(self):
         options = RGBMatrixOptions()
         options.show_refresh_rate = 0
@@ -49,4 +51,8 @@ class Matrix:
     def tick(self):
         self.canvas = self.matrix.SwapOnVSync(self.canvas)
         self.canvas.Clear()
+
+    def setImage(self, path: str, x: int, y: int):
+        image = Image.open(path)
+        self.canvas.SetImage(image.convert('RGB'), x, y)
 

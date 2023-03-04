@@ -69,7 +69,11 @@ async def draw():
     
     weather_y = 25
     # Draw weather
-    matrix.drawText(4, weather_y + 5, text_color, f'{current_weather.current}°, {current_weather.condition}. {current_weather.low}-{current_weather.high}')
+    matrix.drawText(7, weather_y + 5, text_color, f'{current_weather.current}°, {current_weather.low}-{current_weather.high}')
+
+    if current_weather.icon_paths:
+        icon_path = current_weather.icon_paths[half_seconds % len(current_weather.icon_paths)]
+        matrix.setImage(icon_path, 1, weather_y)
 
     matrix.tick()
 
@@ -91,8 +95,8 @@ async def run_request_loop():
         await tasks['trains']
 
 async def run_weather_loop():
-    global current_weather
     async def update_weather():
+        global current_weather
         current_weather = await get_weather()
     while True:
         tasks['weather'] = asyncio.gather(
