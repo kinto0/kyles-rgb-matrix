@@ -27,7 +27,7 @@ def get_icon_paths(weather_id: int) -> List[str]:
     elif weather_id < 700:
         return paths("snow")
     elif weather_id < 801:
-        return paths("sun")
+        return ["icons/sun.png"]
     elif weather_id < 803:
         return paths("partially")
     else:
