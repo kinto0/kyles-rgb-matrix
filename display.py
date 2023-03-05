@@ -69,7 +69,7 @@ async def draw():
     
     weather_y = 25
     # Draw weather
-    matrix.drawText(9, weather_y + 5, text_color, f'{current_weather.current}°, {current_weather.low}-{current_weather.high}')
+    matrix.drawText(9, weather_y + 5, text_color, f'{current_weather.current}°, {current_weather.low}°-{current_weather.high}°')
 
     if current_weather.icon_paths:
         icon_path = current_weather.icon_paths[half_seconds % len(current_weather.icon_paths)]
