@@ -15,6 +15,24 @@ class Weather:
     low: int = 0
     high: int = 0
 
+def get_icon_paths(weather_id: int) -> List[str]:
+    """weather ID from https://openweathermap.org/weather-conditions"""
+    def paths(name: str):
+        return [f'icons/{name}-0.png', f'icons/{name}-1.png']
+   
+    if weather_id < 300:
+        return paths("lightning")
+    elif weather_id < 600:
+        return paths("rain")
+    elif weather_id < 700:
+        return paths("snow")
+    elif weather_id < 801:
+        return paths("sun")
+    elif weather_id < 803:
+        return paths("partially")
+    else:
+        return ["icons/cloudy.png"]
+
 async def get_weather() -> Optional[Weather]:
     async with httpx.AsyncClient() as client:
         try:
@@ -26,8 +44,8 @@ async def get_weather() -> Optional[Weather]:
             current = int(content['current']['temp'])
             low = int(content['daily'][0]['temp']['min'])
             high = int(content['daily'][0]['temp']['max'])
-            # condition = content['daily'][0]['weather'][0]['description']
-            return Weather(["icons/cloudy-0.png", "icons/cloudy-1.png"], current, low, high)
+            icon_paths = get_icon_paths(content['daily'][0]['weather'][0]['id'])
+            return Weather(icon_paths, current, low, high)
         except Exception as e:
             print(e)
             return None
