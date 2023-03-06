@@ -20,7 +20,7 @@ class Matrix:
         options.cols = 64
         options.drop_privileges = False
         options.brightness = 100
-        options.hardware_mapping = "adafruit-hat"
+        options.hardware_mapping = "adafruit-hat-pwm"
         # options.limit_refresh_rate_hz = 60
         options.pwm_bits = 3
 
