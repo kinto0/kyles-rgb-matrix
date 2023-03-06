@@ -33,7 +33,7 @@ def get_icon_paths(weather_id: int) -> List[str]:
     else:
         return ["icons/cloudy.png"]
 
-async def get_weather() -> Optional[Weather]:
+async def get_weather() -> Weather:
     async with httpx.AsyncClient() as client:
         try:
             app_id = os.getenv("WEATHER_KEY")
@@ -48,5 +48,5 @@ async def get_weather() -> Optional[Weather]:
             return Weather(icon_paths, current, low, high)
         except Exception as e:
             print(e)
-            return None
+            return Weather()
  
