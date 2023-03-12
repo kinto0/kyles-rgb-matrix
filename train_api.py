@@ -16,8 +16,8 @@ class TrainTimes:
             stop_time_updates = [trip.stop_time_updates for trip in trips]
             times = [[update.arrival for update in update_list if update.stop_id == self.stop_id] for update_list in stop_time_updates]
             self.times = sorted([time_list[0] for time_list in times])
-        except:
-            print("failed to get train times")
+        except Exception as e:
+            print(f"failed to get train times: {e}")
         
     def get_times(self):
         return self.times
