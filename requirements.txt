@@ -1,3 +1,3 @@
-nyct-gtfs
+git+https://github.com/kinto0/nyct-gtfs.git
 python-dotenv
 Pillow
