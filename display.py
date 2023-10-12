@@ -8,26 +8,25 @@ from weather_api import get_weather, Weather
 import signal, sys
 
 matrix = Matrix()
-q_color = Color(255, 205, 0)
 six_color = Color(0, 147, 61)
 text_color = Color(200, 200, 200)
 no_color = Color(0, 0, 0)
 half_seconds: int = 0
-q_times = TrainTimes("Q", "Q03S")
-six_times = TrainTimes("6", "628S")
+six_up_times = TrainTimes("6", "632N")
+six_times = TrainTimes("6", "632S")
 current_weather = Weather()
 
 tasks = {}
 
 async def update_times():
-    global q_times, six_times, half_seconds
-    await asyncio.gather(q_times.refresh(), six_times.refresh())
+    global six_up_times, six_times, half_seconds
+    await asyncio.gather(six_up_times.refresh(), six_times.refresh())
     half_seconds = 0
 
 def format_times(times) -> str:
     try:
         now = datetime.now()
-        real_trains = list(filter(lambda x: x > now + timedelta(minutes=4), times.get_times()))
+        real_trains = list(filter(lambda x: x > now + timedelta(minutes=1), times.get_times()))
         if len(real_trains) < 3:
             print("bad. train times empty")
         time_untils = [real_train - now for real_train in real_trains]
@@ -37,31 +36,30 @@ def format_times(times) -> str:
 
 
 async def draw():
-    global half_seconds, scheduler, q_times, six_times, current_weather
+    global half_seconds, scheduler, six_up_times, six_times, current_weather
     half_seconds += 1
 
     # Draw recency line
-    matrix.drawLine(0, 0, half_seconds, 0, q_color)
+    matrix.drawLine(0, 0, half_seconds, 0, six_color)
 
-    q_y = 5
-    # Draw Q
-    matrix.drawFilledCircle(4, q_y + 2, 4, q_color)
-    matrix.drawText(3, q_y + 5, no_color, "Q")
-    matrix.drawFilledCircle(4, q_y + 5, 1, q_color)
-    # Draw stop + down arrow
-    matrix.drawText(9, q_y + 5, q_color, "72")
-    matrix.drawLine(18, q_y, 18, q_y + 4, q_color)
-    matrix.drawLine(17, q_y + 3, 19, q_y + 3, q_color)
+    six_up_y = 5
+    # Draw 6 uptown
+    matrix.drawFilledCircle(4, six_up_y + 2, 4, six_color)
+    matrix.drawText(3, six_up_y + 5, no_color, "6")
+    # Draw stop + up arrow
+    matrix.drawText(9, six_up_y + 5, six_color, "33")
+    matrix.drawLine(18, six_up_y, 18, six_up_y + 4, six_color)
+    matrix.drawLine(17, six_up_y + 1, 19, six_up_y + 1, six_color)
     # Draw times
-    matrix.drawText(21, q_y + 5, text_color, format_times(q_times))
+    matrix.drawText(21, six_up_y + 5, text_color, format_times(six_up_times))
 
     
     six_y = 15
-    # Draw 6
+    # Draw 6 downtown
     matrix.drawFilledCircle(4, six_y + 2, 4, six_color)
     matrix.drawText(3, six_y + 5, no_color, "6")
     # Draw stop + down arrow
-    matrix.drawText(9, six_y + 5, six_color, "68")
+    matrix.drawText(9, six_y + 5, six_color, "33")
     matrix.drawLine(18, six_y, 18, six_y + 4, six_color)
     matrix.drawLine(17, six_y + 3, 19, six_y + 3, six_color)
     # Draw times
